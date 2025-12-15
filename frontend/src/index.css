@@ -1,0 +1,45 @@
+body { font-family: system-ui, Arial, sans-serif; padding: 20px; background: #f7f7f8; }
+.container { max-width: 760px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
+.form { display: flex; gap: 8px; margin-bottom: 12px; }
+.form input, .form select { padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+.form button { padding: 8px 12px; }
+.list { list-style: none; padding: 0; }
+.line { display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid #eee }
+.actions button { margin-left:6px }
+.note { color:#666; font-size: 0.9rem }
+
+.toast {
+	position: fixed;
+	right: 20px;
+	bottom: 20px;
+	background: #ffdddd;
+	color: #600;
+	border: 1px solid #ff8888;
+	padding: 10px 14px;
+	border-radius: 6px;
+	box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.modal-overlay {
+	position: fixed;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0,0,0,0.35);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.modal {
+	background: white;
+	padding: 18px;
+	border-radius: 8px;
+	width: 360px;
+	box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+}
+.modal-row { display:flex; flex-direction:column; gap:6px; margin-bottom:10px }
+.modal-row label { font-size:0.85rem; color:#444 }
+.modal-row input, .modal-row select { padding:8px; border:1px solid #ddd; border-radius:4px }
+.modal-actions { display:flex; gap:8px; justify-content:flex-end }
+.modal-error { color:#b00; margin-bottom:8px }
