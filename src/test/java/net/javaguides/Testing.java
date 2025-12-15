@@ -21,7 +21,6 @@ public class Testing {
 	private Path tempFile;
 
 	private ExpenseManager createManager() throws Exception {
-		// create and then delete to allow repository to write header on initialization
 		tempFile = Files.createTempFile("expenses-test", ".csv");
 		Files.deleteIfExists(tempFile);
 		return new ExpenseManager(tempFile);
@@ -82,12 +81,10 @@ public class Testing {
 	@Test
 	@DisplayName("graceful handling of malformed file lines")
 	public void testMalformedFileRead() throws Exception {
-		// create a file with header + malformed line
 		tempFile = Files.createTempFile("expenses-test-malformed", ".csv");
 		List<String> lines = List.of("id|dateTime|description|category|amount", "bad|line|missing|fields");
 		Files.write(tempFile, lines);
 		ExpenseManager manager = new ExpenseManager(tempFile);
-		// malformed line should be ignored and no exception thrown; list should be empty
 		List<Expense> all = manager.listExpenses();
 		assertEquals(0, all.size(), "Malformed lines should be ignored by loader");
 	}
@@ -114,7 +111,6 @@ public class Testing {
 		ExpenseManager manager = createManager();
 		manager.addExpense("A", "X", new BigDecimal("0.10"));
 		manager.addExpense("B", "X", new BigDecimal("0.20"));
-		// using BigDecimal with string ensures exact decimal arithmetic
 		assertEquals(new BigDecimal("0.30"), manager.totalSpent());
 	}
 

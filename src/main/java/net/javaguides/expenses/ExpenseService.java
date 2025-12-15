@@ -1,17 +1,16 @@
 package net.javaguides.expenses;
 
-import org.springframework.stereotype.Service;
-
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.stereotype.Service;
 
 @Service
 public class ExpenseService {
     private final ExpenseManager manager;
 
     public ExpenseService() {
-        // store CSV in working directory; adjust path if you want a different location
         this.manager = new ExpenseManager(Path.of("expenses.csv"));
     }
 
