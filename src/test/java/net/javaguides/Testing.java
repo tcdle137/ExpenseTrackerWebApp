@@ -80,6 +80,57 @@ public class Testing {
 	}
 
 	@Test
+	@DisplayName("graceful handling of malformed file lines")
+	public void testMalformedFileRead() throws Exception {
+		// create a file with header + malformed line
+		tempFile = Files.createTempFile("expenses-test-malformed", ".csv");
+		List<String> lines = List.of("id|dateTime|description|category|amount", "bad|line|missing|fields");
+		Files.write(tempFile, lines);
+		ExpenseManager manager = new ExpenseManager(tempFile);
+		// malformed line should be ignored and no exception thrown; list should be empty
+		List<Expense> all = manager.listExpenses();
+		assertEquals(0, all.size(), "Malformed lines should be ignored by loader");
+	}
+
+	@Test
+	@DisplayName("invalid numeric input in file results in zero amount and does not crash")
+	public void testInvalidAmountInFile() throws Exception {
+		tempFile = Files.createTempFile("expenses-test-invalid-amount", ".csv");
+		List<String> lines = List.of(
+				"id|dateTime|description|category|amount",
+				"1|2025-01-01T00:00:00|BadAmount|Food|not-a-number"
+		);
+		Files.write(tempFile, lines);
+		ExpenseManager manager = new ExpenseManager(tempFile);
+		List<Expense> all = manager.listExpenses();
+		assertEquals(1, all.size(), "Line with invalid amount should still produce an Expense with amount 0");
+		assertEquals(new BigDecimal("0"), all.get(0).getAmount());
+		assertEquals(new BigDecimal("0"), manager.totalSpent());
+	}
+
+	@Test
+	@DisplayName("math logic correctness for totals")
+	public void testMathLogicTotals() throws Exception {
+		ExpenseManager manager = createManager();
+		manager.addExpense("A", "X", new BigDecimal("0.10"));
+		manager.addExpense("B", "X", new BigDecimal("0.20"));
+		// using BigDecimal with string ensures exact decimal arithmetic
+		assertEquals(new BigDecimal("0.30"), manager.totalSpent());
+	}
+
+	@Test
+	@DisplayName("display / ordering: entries maintain insertion order")
+	public void testDisplayOrder() throws Exception {
+		ExpenseManager manager = createManager();
+		Expense e1 = manager.addExpense("First", "Misc", new BigDecimal("1.00"));
+		Expense e2 = manager.addExpense("Second", "Misc", new BigDecimal("2.00"));
+		List<Expense> ordered = manager.listSortedByEntryOrder();
+		assertEquals(2, ordered.size());
+		assertEquals(e1.getId(), ordered.get(0).getId());
+		assertEquals(e2.getId(), ordered.get(1).getId());
+	}
+
+	@Test
 	@DisplayName("edit and delete expense operations")
 	public void testEditAndDelete() throws Exception {
 		ExpenseManager manager = createManager();
